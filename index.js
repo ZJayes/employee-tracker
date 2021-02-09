@@ -67,6 +67,8 @@ const viewEmployees = () => {
     )
 }
 
+//view departments
+
 const viewDepartments = () => {
     console.log("All Departments:")
     connection.query("SELECT name FROM department",
@@ -80,6 +82,8 @@ const viewDepartments = () => {
     )
 }
 
+// view roles
+
 const viewRoles = () => {
     console.log("All Roles:")
     connection.query("SELECT title, salary, department_id FROM role",
@@ -91,6 +95,95 @@ const viewRoles = () => {
             employeeTracker()
         }
     )
+}
+
+//add employee
+
+const addEmployee = () => {
+    inquirer.prompt ([
+        {
+            name:"first",
+            type:"input",
+            message:"What is the first name?"
+        },
+        {
+            name:"last",
+            type:"input",
+            message:"What is the last name?"
+        },
+        {
+            name:"roleId",
+            type:"input",
+            message:"What is the role id?"
+        },
+        {
+            name:"managerId",
+            type:"input",
+            message:"What is the manager id?"
+        }
+        //question marks are placeholders
+    ]).then(answer => {
+        connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)",
+        [
+            answer.first, answer.last, answer.roleId, answer.managerId
+        ], function (err, res) {
+            if (err) throw (err);
+            viewEmployees()
+            employeeTracker()
+        }
+        )
+    })
+    
+}
+
+//add department
+
+const addDepartment = () => {
+    inquirer.prompt ([
+        {
+            name:"depName",
+            type:"input",
+            message:"What is the department name?",
+        },
+    ]).then(answer => {
+        connection.query("INSERT INTO department (name) VALUES (?)",
+        [
+            answer.depName
+        ], function (err, res) {
+            if (err) throw (err);
+            viewDepartments()
+            employeeTracker()
+        })
+    })
+}
+
+const addRole = () => {
+    inquirer.prompt ([
+        {
+            name:"title",
+            type:"input",
+            message:"What is the title of the role?"
+        },
+        {
+            name:"salary",
+            type:"input",
+            message:"What is the salary of the role? (up to 6 figures)"
+        },
+        {
+            name:"department",
+            type:"input",
+            message:"What is the department id for this role?"
+        },
+    ]).then(answer => {
+        connection.query("INSERT INTO role (title, salary, department_id) VALUES (?,?,?)",
+        [
+            answer.title, answer.salary, answer.department
+        ], function (err, res) {
+            if (err) throw (err);
+            viewRoles()
+            employeeTracker()
+        })
+    })
 }
 
 
