@@ -67,7 +67,31 @@ const viewEmployees = () => {
     )
 }
 
-// View departments, roles, employees
+const viewDepartments = () => {
+    console.log("All Departments:")
+    connection.query("SELECT name FROM department",
+        {
+
+        }, function (err, res) {
+            if (err) throw (err);
+            console.table(res)
+            employeeTracker()
+        }
+    )
+}
+
+const viewRoles = () => {
+    console.log("All Roles:")
+    connection.query("SELECT title, salary, department_id FROM role",
+        {
+
+        }, function (err, res) {
+            if (err) throw (err);
+            console.table(res)
+            employeeTracker()
+        }
+    )
+}
 
 
 // Update employee roles
