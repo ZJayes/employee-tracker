@@ -1,55 +1,70 @@
 const inquirer = require("inquirer")
-const mysql = require("mysql");
-const { exit } = require("process");
-const { formatWithOptions } = require("util");
+const mysql = require("mysql")
+
 
 const connection = mysql.createConnection({
-    host     : 'localhost',
-    user     : 'root',
-    password : 'root',
-    database : 'employeetracker_DB'
-  });
+    host: 'localhost',
+    user: 'root',
+    password: 'root',
+    database: 'employeetracker_DB'
+});
 
-  connection.connect(err => {
+connection.connect(err => {
     if (err) throw err
     console.log(`Connected to mysql on thread ${connection.threadId}`)
 });
 
 // Add departments, roles, employees
 
+const choice = 'View all employees, View all departments, View all roles , Add new employee, Add new department, Add new role, Update employees role, Exit';
 
-const choice = "View all employees, View all departments, View all roles, Add new employee, Add new department, Add new role, update employees role, exit";
-//taking strings and splitting into an array where commas are
+// //taking strings and splitting into an array where commas are
 const options = choice.split(",")
 
 
 const employeeTracker = () => {
     inquirer.prompt([
         {
-            name:"user",
-            type:"list",
+            name: 'action',
+            type: 'list',
             message: "What would you like to do?",
             choices: options,
         }
+        //selecting the option from the array above
     ]).then(answer => {
-        if(answer.action === options[0]){
+        console.log(answer)
+        if (answer.action === options[0]) {
             viewEmployees()
-        }else if (answer.action === options [1]){
+        } else if (answer.action === options[1]) {
             viewDepartments()
-        }else if (answer.action === options [2]){
+        } else if (answer.action === options[2]) {
             viewRoles()
-        }else if (answer.action === options [3]){
+        } else if (answer.action === options[3]) {
             addEmployee()
-        }else if (answer.action === options [4]){
+        } else if (answer.action === options[4]) {
             addDepartment()
-        }else if (answer.action === options [5]){
+        } else if (answer.action === options[5]) {
             addRole()
-        }else if (answer.action === options [6]){
+        } else if (answer.action === options[6]) {
             updateRole()
-        }else {
+        } else {
             exit()
         }
     })
+}
+
+//view all employees
+const viewEmployees = () => {
+    console.log("All Employees:")
+    connection.query("SELECT first_name, last_name, role_id, manager_id FROM employee",
+        {
+
+        }, function (err, res) {
+            if (err) throw (err);
+            console.table(res)
+            employeeTracker()
+        }
+    )
 }
 
 // View departments, roles, employees
@@ -57,3 +72,12 @@ const employeeTracker = () => {
 
 // Update employee roles
 
+const exit = () => {
+    console.log("Bye")
+    connection.end()
+    process.exit()
+
+}
+
+//see in termial
+employeeTracker()
