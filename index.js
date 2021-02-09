@@ -60,7 +60,7 @@ const viewEmployees = () => {
         {
 
         }, function (err, res) {
-            if (err) throw (err);
+            if (err) throw err;
             console.table(res)
             employeeTracker()
         }
@@ -75,7 +75,7 @@ const viewDepartments = () => {
         {
 
         }, function (err, res) {
-            if (err) throw (err);
+            if (err) throw err;
             console.table(res)
             employeeTracker()
         }
@@ -90,7 +90,7 @@ const viewRoles = () => {
         {
 
         }, function (err, res) {
-            if (err) throw (err);
+            if (err) throw err;
             console.table(res)
             employeeTracker()
         }
@@ -127,7 +127,7 @@ const addEmployee = () => {
         [
             answer.first, answer.last, answer.roleId, answer.managerId
         ], function (err, res) {
-            if (err) throw (err);
+            if (err) throw err;
             viewEmployees()
             employeeTracker()
         }
@@ -150,7 +150,7 @@ const addDepartment = () => {
         [
             answer.depName
         ], function (err, res) {
-            if (err) throw (err);
+            if (err) throw err;
             viewDepartments()
             employeeTracker()
         })
@@ -162,27 +162,54 @@ const addRole = () => {
         {
             name:"title",
             type:"input",
-            message:"What is the title of the role?"
+            message:"What is the title of the role?",
         },
         {
             name:"salary",
             type:"input",
-            message:"What is the salary of the role? (up to 6 figures)"
+            message:"What is the salary of the role? (up to 6 figures)",
         },
         {
             name:"department",
             type:"input",
-            message:"What is the department id for this role?"
+            message:"What is the department id for this role?",
         },
     ]).then(answer => {
         connection.query("INSERT INTO role (title, salary, department_id) VALUES (?,?,?)",
         [
             answer.title, answer.salary, answer.department
         ], function (err, res) {
-            if (err) throw (err);
+            if (err) throw err;
             viewRoles()
             employeeTracker()
         })
+    })
+}
+
+const updateRole = () => {
+    inquirer.prompt([
+        {
+            name: "newRole",
+            type: "input",
+            message: "What is the new role id?"
+        },
+        {
+            name: "employee",
+            type: "input",
+            message: "Who is getting the new role?"
+        },
+    ]).then(answer => {
+        console.log("New Created Role:")
+        connection.query(
+            "UPDATE employee SET role_id = ? WHERE first_name = ?",
+            [
+                answer.newRole, answer.employee
+            ], function (err, res) {
+                if (err) throw err;
+                viewEmployees()
+                employeeTracker()
+            }
+        )
     })
 }
 
