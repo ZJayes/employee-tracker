@@ -48,14 +48,16 @@ const employeeTracker = () => {
         } else if (answer.action === options[6]) {
             updateRole()
         } else {
+            //does not need whats is quotes above
             exit()
         }
     })
 }
-
+//PUT employeeTracker() after every function to restart in the terminal
 //view all employees
 const viewEmployees = () => {
     console.log("All Employees:")
+    //SELECT whats in the table first then FROM table
     connection.query("SELECT first_name, last_name, role_id, manager_id FROM employee",
         {
 
@@ -71,6 +73,7 @@ const viewEmployees = () => {
 
 const viewDepartments = () => {
     console.log("All Departments:")
+    //SELECT whats in the table first then FROM table
     connection.query("SELECT name FROM department",
         {
 
@@ -83,9 +86,9 @@ const viewDepartments = () => {
 }
 
 // view roles
-
 const viewRoles = () => {
     console.log("All Roles:")
+    //SELECT whats in the table first then FROM table
     connection.query("SELECT title, salary, department_id FROM role",
         {
 
@@ -98,7 +101,7 @@ const viewRoles = () => {
 }
 
 //add employee
-
+//inquirer prompt of questions to ask in the terminal to make the new user
 const addEmployee = () => {
     inquirer.prompt ([
         {
@@ -122,7 +125,9 @@ const addEmployee = () => {
             message:"What is the manager id?"
         }
         //question marks are placeholders
+        //answer.example takes what you enter in the terminal and posts it in the table
     ]).then(answer => {
+        //INSERT INTO the table name (the columns separated by commas) VALUES (? as a placeholder)
         connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)",
         [
             answer.first, answer.last, answer.roleId, answer.managerId
@@ -146,6 +151,8 @@ const addDepartment = () => {
             message:"What is the department name?",
         },
     ]).then(answer => {
+        //answer.example takes what you enter in the terminal and posts it in the table
+        //INSERT INTO table name (column) VALUES (? as placeholder)
         connection.query("INSERT INTO department (name) VALUES (?)",
         [
             answer.depName
@@ -175,6 +182,8 @@ const addRole = () => {
             message:"What is the department id for this role?",
         },
     ]).then(answer => {
+        //answer.example takes what you enter in the terminal and posts it in the table
+        //INSERT INTO table name (columns separated by commas) VALUES (? as placeholder)
         connection.query("INSERT INTO role (title, salary, department_id) VALUES (?,?,?)",
         [
             answer.title, answer.salary, answer.department
@@ -186,6 +195,8 @@ const addRole = () => {
     })
 }
 
+//update role
+//inquirer prompt questions in terminal 
 const updateRole = () => {
     inquirer.prompt([
         {
@@ -201,6 +212,8 @@ const updateRole = () => {
     ]).then(answer => {
         console.log("New Created Role:")
         connection.query(
+            //answer.example takes what you enter in the terminal and posts it in the table
+            //UPDATE table SET column = ?(placeholder) WHERE column = ?(placeholder)
             "UPDATE employee SET role_id = ? WHERE first_name = ?",
             [
                 answer.newRole, answer.employee
@@ -214,8 +227,7 @@ const updateRole = () => {
 }
 
 
-// Update employee roles
-
+//exit terminal
 const exit = () => {
     console.log("Bye")
     connection.end()
